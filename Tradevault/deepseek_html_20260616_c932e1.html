@@ -1,0 +1,1838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trading Vault — Global Markets</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        /* ============================================================
+                   STYLE SYSTEM
+                   ============================================================ */
+        :root {
+            --golden: #d4a853;
+            --golden-light: #e8c97a;
+            --golden-dark: #b8923a;
+            --emerald: #2ecc71;
+            --emerald-dark: #27ae60;
+            --red: #e74c3c;
+            --cream: #faf8f4;
+            --cream-dark: #f0ede6;
+            --charcoal: #1a1a1a;
+            --charcoal-light: #2d2d2d;
+            --taupe: #8a7a6a;
+            --taupe-light: #b0a090;
+            --white: #ffffff;
+            --shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            --shadow-dark: 0 20px 60px rgba(0, 0, 0, 0.3);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --font-heading: 'Syne', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        /* ============================================================
+                   RESET & BASE
+                   ============================================================ */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--cream);
+            color: var(--charcoal);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ============================================================
+                   SCROLL ANIMATIONS
+                   ============================================================ */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ============================================================
+                   BUTTONS
+                   ============================================================ */
+        .btn-primary {
+            display: inline-block;
+            background: var(--golden);
+            color: var(--charcoal);
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 0.95rem;
+            padding: 14px 36px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-primary:hover {
+            background: var(--golden-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(212, 168, 83, 0.35);
+        }
+
+        .btn-outline {
+            display: inline-block;
+            background: transparent;
+            color: var(--charcoal);
+            font-family: var(--font-heading);
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 14px 36px;
+            border-radius: 50px;
+            border: 2px solid var(--charcoal);
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .btn-outline:hover {
+            background: var(--charcoal);
+            color: var(--white);
+        }
+
+        .btn-sm {
+            padding: 8px 20px;
+            font-size: 0.8rem;
+        }
+
+        /* ============================================================
+                   NAVBAR
+                   ============================================================ */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 16px 0;
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.06);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--charcoal);
+        }
+
+        .logo .vault-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--golden);
+            color: var(--charcoal);
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .logo span {
+            color: var(--golden);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            list-style: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .nav-links a {
+            color: var(--charcoal);
+            opacity: 0.6;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--golden);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            opacity: 1;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a.active {
+            opacity: 1;
+            font-weight: 600;
+        }
+
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-cta .btn-primary {
+            padding: 10px 24px;
+            font-size: 0.8rem;
+        }
+
+        .menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--charcoal);
+            background: none;
+            border: none;
+        }
+
+        /* ============================================================
+                   PAGE HEADER
+                   ============================================================ */
+        .page-header {
+            padding: 120px 0 40px;
+            background: var(--cream);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        .page-header .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .page-header h1 {
+            font-family: var(--font-heading);
+            font-size: 2.6rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .page-header h1 .highlight {
+            color: var(--golden);
+        }
+
+        .page-header p {
+            color: var(--taupe);
+            font-size: 1.05rem;
+            max-width: 480px;
+        }
+
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(46, 204, 113, 0.12);
+            color: var(--emerald-dark);
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .live-badge .dot {
+            width: 8px;
+            height: 8px;
+            background: var(--emerald);
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse-dot 1.5s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(0.8);
+            }
+        }
+
+        /* ============================================================
+                   TAB SWITCHER
+                   ============================================================ */
+        .tab-section {
+            background: var(--white);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            position: sticky;
+            top: 72px;
+            z-index: 100;
+            padding: 12px 0;
+        }
+
+        .tab-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 10px 24px;
+            border-radius: 50px;
+            border: none;
+            background: transparent;
+            font-family: var(--font-body);
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: var(--taupe);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .tab-btn:hover {
+            color: var(--charcoal);
+            background: rgba(0, 0, 0, 0.04);
+        }
+
+        .tab-btn.active {
+            background: var(--golden);
+            color: var(--charcoal);
+            font-weight: 600;
+        }
+
+        .tab-btn .count {
+            background: rgba(0, 0, 0, 0.06);
+            padding: 0 8px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            margin-left: 4px;
+        }
+
+        .tab-btn.active .count {
+            background: rgba(0, 0, 0, 0.12);
+        }
+
+        /* ============================================================
+                   STATS OVERVIEW
+                   ============================================================ */
+        .stats-overview {
+            padding: 32px 0 24px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 20px 24px;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            box-shadow: var(--shadow);
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--taupe);
+            font-weight: 600;
+        }
+
+        .stat-card .stat-value {
+            font-family: var(--font-heading);
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        .stat-card .stat-value .green {
+            color: var(--emerald);
+        }
+
+        .stat-card .stat-value .red {
+            color: var(--red);
+        }
+
+        .stat-card .stat-value .golden {
+            color: var(--golden);
+        }
+
+        /* ============================================================
+                   CHART SECTION
+                   ============================================================ */
+        .chart-section {
+            padding: 24px 0 32px;
+        }
+
+        .chart-container {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 28px 24px 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .chart-header .chart-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chart-header .chart-title h3 {
+            font-family: var(--font-heading);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .chart-header .chart-title .asset-symbol {
+            color: var(--taupe);
+            font-size: 0.85rem;
+        }
+
+        .chart-timeframes {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .chart-timeframes button {
+            padding: 6px 14px;
+            border-radius: 50px;
+            border: none;
+            background: transparent;
+            font-family: var(--font-body);
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--taupe);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .chart-timeframes button:hover {
+            background: rgba(0, 0, 0, 0.04);
+        }
+
+        .chart-timeframes button.active {
+            background: var(--golden);
+            color: var(--charcoal);
+            font-weight: 600;
+        }
+
+        .chart-wrapper {
+            width: 100%;
+            height: 320px;
+            position: relative;
+        }
+
+        .chart-wrapper svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .chart-info-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        .chart-info-item .info-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--taupe);
+            font-weight: 600;
+        }
+
+        .chart-info-item .info-value {
+            font-family: var(--font-heading);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        /* ============================================================
+                   TABLE SECTION
+                   ============================================================ */
+        .table-section {
+            padding: 32px 0 60px;
+        }
+
+        .table-container {
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        thead {
+            background: var(--cream-dark);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        thead th {
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--taupe);
+            cursor: pointer;
+            user-select: none;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        thead th:hover {
+            color: var(--charcoal);
+        }
+
+        thead th .sort-icon {
+            margin-left: 4px;
+            opacity: 0.3;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: rgba(212, 168, 83, 0.04);
+        }
+
+        tbody tr.selected {
+            background: rgba(212, 168, 83, 0.08);
+            border-left: 3px solid var(--golden);
+        }
+
+        tbody td {
+            padding: 12px 16px;
+            vertical-align: middle;
+        }
+
+        .asset-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .asset-cell .asset-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--cream-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.7rem;
+            color: var(--taupe);
+            flex-shrink: 0;
+        }
+
+        .asset-cell .asset-name {
+            font-weight: 500;
+        }
+
+        .asset-cell .asset-symbol {
+            font-size: 0.75rem;
+            color: var(--taupe);
+        }
+
+        .change-positive {
+            color: var(--emerald);
+            font-weight: 600;
+        }
+
+        .change-negative {
+            color: var(--red);
+            font-weight: 600;
+        }
+
+        .sparkline-mini {
+            width: 60px;
+            height: 28px;
+        }
+
+        /* ============================================================
+                   FOOTER
+                   ============================================================ */
+        footer {
+            background: var(--charcoal);
+            padding: 50px 0 24px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 32px;
+        }
+
+        .footer-brand .logo {
+            color: var(--white);
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .footer-brand p {
+            font-size: 0.85rem;
+            max-width: 260px;
+        }
+
+        .footer-grid h4 {
+            color: var(--white);
+            font-family: var(--font-heading);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .footer-grid ul {
+            list-style: none;
+        }
+
+        .footer-grid ul li {
+            margin-bottom: 6px;
+        }
+
+        .footer-grid ul a {
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+
+        .footer-grid ul a:hover {
+            color: var(--white);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 0.7rem;
+        }
+
+        .footer-bottom .disclaimer {
+            color: rgba(255, 255, 255, 0.35);
+            max-width: 500px;
+        }
+
+        .footer-bottom .support-email {
+            color: var(--golden);
+        }
+
+        /* ============================================================
+                   RESPONSIVE
+                   ============================================================ */
+        @media (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .chart-info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background: var(--white);
+                padding: 20px;
+                border-radius: var(--radius-sm);
+                margin-top: 12px;
+                box-shadow: var(--shadow);
+            }
+            .nav-links.open {
+                display: flex;
+            }
+            .menu-toggle {
+                display: block;
+            }
+            .nav-cta .btn-primary {
+                padding: 8px 18px;
+                font-size: 0.75rem;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+
+            .stat-card .stat-value {
+                font-size: 1.2rem;
+            }
+
+            .chart-wrapper {
+                height: 220px;
+            }
+
+            .chart-info-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .chart-container {
+                padding: 16px;
+            }
+
+            .tab-btn {
+                padding: 8px 16px;
+                font-size: 0.75rem;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 14px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .stat-card {
+                padding: 14px;
+            }
+            .stat-card .stat-value {
+                font-size: 1rem;
+            }
+            thead th,
+            tbody td {
+                padding: 8px 10px;
+                font-size: 0.75rem;
+            }
+            .asset-cell .asset-icon {
+                width: 24px;
+                height: 24px;
+                font-size: 0.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+    HEADER / NAVBAR
+    ============================================================ -->
+    <header id="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">
+                    <span class="vault-icon"><i class="fas fa-vault"></i></span>
+                    Trading<span>Vault</span>
+                </a>
+
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#" class="active">Markets</a></li>
+                    <li><a href="index.html#features">Features</a></li>
+                    <li><a href="index.html#how-it-works">How It Works</a></li>
+                    <li><a href="index.html#faq">FAQ</a></li>
+                </ul>
+
+                <div class="nav-cta">
+                    <a href="index.html#cta" class="btn-primary">Get Started</a>
+                    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ============================================================
+    PAGE HEADER
+    ============================================================ -->
+    <section class="page-header">
+        <div class="container">
+            <div class="header-content">
+                <div>
+                    <div class="live-badge">
+                        <span class="dot"></span> Live Markets
+                    </div>
+                    <h1>Global Markets <span class="highlight">at Your Fingertips</span></h1>
+                    <p>Real-time prices, advanced charting, and market insights across crypto, forex, and commodities.</p>
+                </div>
+                <div>
+                    <span style="font-size: 0.85rem; color: var(--taupe);">
+                        <i class="fas fa-sync-alt" style="color: var(--emerald);"></i> Updated in real-time
+                    </span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    TAB SWITCHER
+    ============================================================ -->
+    <div class="tab-section" id="tabSection">
+        <div class="container">
+            <div class="tab-wrapper">
+                <button class="tab-btn active" data-tab="all">
+                    <i class="fas fa-globe"></i> All Markets <span class="count">24</span>
+                </button>
+                <button class="tab-btn" data-tab="crypto">
+                    <i class="fas fa-bitcoin"></i> Crypto <span class="count">8</span>
+                </button>
+                <button class="tab-btn" data-tab="forex">
+                    <i class="fas fa-money-bill-wave"></i> Forex <span class="count">8</span>
+                </button>
+                <button class="tab-btn" data-tab="commodities">
+                    <i class="fas fa-gem"></i> Commodities <span class="count">8</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    MAIN CONTENT
+    ============================================================ -->
+    <main>
+
+        <!-- STATS OVERVIEW -->
+        <section class="stats-overview">
+            <div class="container">
+                <div class="stats-grid" id="statsGrid">
+                    <div class="stat-card fade-up">
+                        <div class="stat-label">Total Volume (24h)</div>
+                        <div class="stat-value" id="statVolume">$128.4B</div>
+                    </div>
+                    <div class="stat-card fade-up">
+                        <div class="stat-label">Gainers / Losers</div>
+                        <div class="stat-value" id="statGainers"><span class="green">12</span> / <span class="red">10</span></div>
+                    </div>
+                    <div class="stat-card fade-up">
+                        <div class="stat-label">Top Gainer</div>
+                        <div class="stat-value golden" id="statTopGainer">SOL +5.2%</div>
+                    </div>
+                    <div class="stat-card fade-up">
+                        <div class="stat-label">Top Loser</div>
+                        <div class="stat-value red" id="statTopLoser">OIL -1.2%</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CHART SECTION -->
+        <section class="chart-section">
+            <div class="container">
+                <div class="chart-container fade-up">
+                    <div class="chart-header">
+                        <div class="chart-title">
+                            <h3 id="chartAssetName">Bitcoin</h3>
+                            <span class="asset-symbol" id="chartAssetSymbol">BTC</span>
+                            <span class="change-positive" id="chartAssetChange">+2.4%</span>
+                        </div>
+                        <div class="chart-timeframes" id="timeframeButtons">
+                            <button class="active" data-tf="1D">1D</button>
+                            <button data-tf="1W">1W</button>
+                            <button data-tf="1M">1M</button>
+                            <button data-tf="3M">3M</button>
+                            <button data-tf="1Y">1Y</button>
+                            <button data-tf="ALL">ALL</button>
+                        </div>
+                    </div>
+
+                    <div class="chart-wrapper">
+                        <canvas id="mainChart"></canvas>
+                    </div>
+
+                    <div class="chart-info-grid" id="chartInfoGrid">
+                        <div class="chart-info-item">
+                            <div class="info-label">Volume (24h)</div>
+                            <div class="info-value" id="infoVolume">$32.4B</div>
+                        </div>
+                        <div class="chart-info-item">
+                            <div class="info-label">Market Cap</div>
+                            <div class="info-value" id="infoMarketCap">$1.32T</div>
+                        </div>
+                        <div class="chart-info-item">
+                            <div class="info-label">24h High</div>
+                            <div class="info-value" id="infoHigh">$68,450</div>
+                        </div>
+                        <div class="chart-info-item">
+                            <div class="info-label">24h Low</div>
+                            <div class="info-value" id="infoLow">$65,200</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TABLE SECTION -->
+        <section class="table-section">
+            <div class="container">
+                <div class="table-container fade-up">
+                    <div class="table-wrapper">
+                        <table id="marketTable">
+                            <thead>
+                                <tr>
+                                    <th data-sort="asset">Asset <span class="sort-icon">↕</span></th>
+                                    <th data-sort="price">Price <span class="sort-icon">↕</span></th>
+                                    <th data-sort="change">24h Change <span class="sort-icon">↕</span></th>
+                                    <th data-sort="high">24h High <span class="sort-icon">↕</span></th>
+                                    <th data-sort="low">24h Low <span class="sort-icon">↕</span></th>
+                                    <th data-sort="volume">Volume <span class="sort-icon">↕</span></th>
+                                    <th data-sort="marketCap">Market Cap <span class="sort-icon">↕</span></th>
+                                    <th>Trend</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                <!-- Rows injected by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ============================================================
+    FOOTER
+    ============================================================ -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <span class="vault-icon"><i class="fas fa-vault"></i></span>
+                        Trading<span>Vault</span>
+                    </div>
+                    <p>Multi-asset trading platform covering crypto, commodities, and stocks with real-time data.</p>
+                </div>
+                <div>
+                    <h4>Platform</h4>
+                    <ul>
+                        <li><a href="#">Markets</a></li>
+                        <li><a href="index.html#features">Features</a></li>
+                        <li><a href="index.html#how-it-works">How It Works</a></li>
+                        <li><a href="#">Pricing</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="mailto:supporttradingvault@gmail.com">supporttradingvault@gmail.com</a></li>
+                        <li><a href="index.html#faq">FAQ</a></li>
+                        <li><a href="#">Help Center</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Risk Disclosure</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <span>&copy; 2026 Trading Vault. All rights reserved.</span>
+                <span class="disclaimer">
+                    <strong>Risk Warning:</strong> Trading carries risk. Please understand the risks before investing.
+                </span>
+                <span class="support-email">
+                    <i class="fas fa-envelope"></i> supporttradingvault@gmail.com
+                </span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============================================================
+    JAVASCRIPT
+    ============================================================ -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
+    </script>
+    <script>
+        // ============================================================
+        // DATA
+        // ============================================================
+        const marketData = [{
+            id: 'btc',
+            symbol: 'BTC',
+            name: 'Bitcoin',
+            type: 'crypto',
+            price: 67234,
+            change: 2.4,
+            high: 68450,
+            low: 65200,
+            volume: 32400000000,
+            marketCap: 1320000000000,
+            sparkline: [65200, 65800, 66200, 66000, 67000, 67500, 67234]
+        }, {
+            id: 'eth',
+            symbol: 'ETH',
+            name: 'Ethereum',
+            type: 'crypto',
+            price: 3456,
+            change: 1.8,
+            high: 3520,
+            low: 3380,
+            volume: 18400000000,
+            marketCap: 415000000000,
+            sparkline: [3380, 3400, 3450, 3420, 3480, 3500, 3456]
+        }, {
+            id: 'sol',
+            symbol: 'SOL',
+            name: 'Solana',
+            type: 'crypto',
+            price: 172.50,
+            change: 5.2,
+            high: 178.20,
+            low: 164.30,
+            volume: 3200000000,
+            marketCap: 76500000000,
+            sparkline: [165, 168, 170, 166, 173, 176, 172.5]
+        }, {
+            id: 'xrp',
+            symbol: 'XRP',
+            name: 'Ripple',
+            type: 'crypto',
+            price: 0.612,
+            change: -0.3,
+            high: 0.625,
+            low: 0.595,
+            volume: 2800000000,
+            marketCap: 33400000000,
+            sparkline: [0.610, 0.615, 0.608, 0.600, 0.605, 0.618, 0.612]
+        }, {
+            id: 'ada',
+            symbol: 'ADA',
+            name: 'Cardano',
+            type: 'crypto',
+            price: 0.452,
+            change: 3.1,
+            high: 0.465,
+            low: 0.435,
+            volume: 1200000000,
+            marketCap: 16000000000,
+            sparkline: [0.440, 0.445, 0.450, 0.442, 0.455, 0.460, 0.452]
+        }, {
+            id: 'dot',
+            symbol: 'DOT',
+            name: 'Polkadot',
+            type: 'crypto',
+            price: 7.82,
+            change: -0.8,
+            high: 8.05,
+            low: 7.60,
+            volume: 560000000,
+            marketCap: 10800000000,
+            sparkline: [7.90, 7.85, 7.75, 7.70, 7.80, 7.95, 7.82]
+        }, {
+            id: 'avax',
+            symbol: 'AVAX',
+            name: 'Avalanche',
+            type: 'crypto',
+            price: 38.20,
+            change: 4.1,
+            high: 39.80,
+            low: 36.40,
+            volume: 980000000,
+            marketCap: 14200000000,
+            sparkline: [37.0, 37.5, 38.0, 37.2, 38.5, 39.0, 38.2]
+        }, {
+            id: 'matic',
+            symbol: 'MATIC',
+            name: 'Polygon',
+            type: 'crypto',
+            price: 0.725,
+            change: 1.2,
+            high: 0.740,
+            low: 0.710,
+            volume: 420000000,
+            marketCap: 6800000000,
+            sparkline: [0.715, 0.720, 0.725, 0.718, 0.730, 0.735, 0.725]
+        }, {
+            id: 'eurusd',
+            symbol: 'EUR/USD',
+            name: 'Euro / US Dollar',
+            type: 'forex',
+            price: 1.0872,
+            change: 0.4,
+            high: 1.0895,
+            low: 1.0845,
+            volume: 180000000000,
+            marketCap: 0,
+            sparkline: [1.0850, 1.0860, 1.0870, 1.0855, 1.0880, 1.0885, 1.0872]
+        }, {
+            id: 'gbpusd',
+            symbol: 'GBP/USD',
+            name: 'British Pound / USD',
+            type: 'forex',
+            price: 1.2624,
+            change: -0.2,
+            high: 1.2650,
+            low: 1.2600,
+            volume: 95000000000,
+            marketCap: 0,
+            sparkline: [1.2630, 1.2625, 1.2615, 1.2605, 1.2610, 1.2630, 1.2624]
+        }, {
+            id: 'jpyusd',
+            symbol: 'JPY/USD',
+            name: 'Japanese Yen / USD',
+            type: 'forex',
+            price: 0.00672,
+            change: 0.8,
+            high: 0.00675,
+            low: 0.00665,
+            volume: 72000000000,
+            marketCap: 0,
+            sparkline: [0.00670, 0.00672, 0.00673, 0.00668, 0.00670, 0.00674, 0.00672]
+        }, {
+            id: 'audusd',
+            symbol: 'AUD/USD',
+            name: 'Australian Dollar / USD',
+            type: 'forex',
+            price: 0.6598,
+            change: 0.6,
+            high: 0.6620,
+            low: 0.6570,
+            volume: 62000000000,
+            marketCap: 0,
+            sparkline: [0.6580, 0.6590, 0.6600, 0.6575, 0.6605, 0.6610, 0.6598]
+        }, {
+            id: 'usdcad',
+            symbol: 'USD/CAD',
+            name: 'US Dollar / Canadian Dollar',
+            type: 'forex',
+            price: 1.3625,
+            change: -0.1,
+            high: 1.3650,
+            low: 1.3600,
+            volume: 48000000000,
+            marketCap: 0,
+            sparkline: [1.3630, 1.3625, 1.3615, 1.3610, 1.3620, 1.3635, 1.3625]
+        }, {
+            id: 'usdchf',
+            symbol: 'USD/CHF',
+            name: 'US Dollar / Swiss Franc',
+            type: 'forex',
+            price: 0.9085,
+            change: 0.3,
+            high: 0.9100,
+            low: 0.9060,
+            volume: 38000000000,
+            marketCap: 0,
+            sparkline: [0.9070, 0.9080, 0.9090, 0.9075, 0.9085, 0.9095, 0.9085]
+        }, {
+            id: 'gbpjpy',
+            symbol: 'GBP/JPY',
+            name: 'British Pound / Japanese Yen',
+            type: 'forex',
+            price: 190.35,
+            change: 0.5,
+            high: 191.20,
+            low: 189.00,
+            volume: 42000000000,
+            marketCap: 0,
+            sparkline: [189.50, 190.00, 190.50, 189.80, 190.80, 191.00, 190.35]
+        }, {
+            id: 'eurjpy',
+            symbol: 'EUR/JPY',
+            name: 'Euro / Japanese Yen',
+            type: 'forex',
+            price: 164.80,
+            change: 0.7,
+            high: 165.50,
+            low: 163.80,
+            volume: 35000000000,
+            marketCap: 0,
+            sparkline: [164.00, 164.50, 165.00, 164.20, 164.80, 165.20, 164.80]
+        }, {
+            id: 'gold',
+            symbol: 'GOLD',
+            name: 'Gold',
+            type: 'commodities',
+            price: 2350.40,
+            change: 0.6,
+            high: 2365.00,
+            low: 2335.00,
+            volume: 8200000000,
+            marketCap: 0,
+            sparkline: [2335, 2345, 2350, 2340, 2355, 2360, 2350.4]
+        }, {
+            id: 'silver',
+            symbol: 'SILVER',
+            name: 'Silver',
+            type: 'commodities',
+            price: 28.65,
+            change: 1.2,
+            high: 29.10,
+            low: 28.20,
+            volume: 3200000000,
+            marketCap: 0,
+            sparkline: [28.2, 28.4, 28.6, 28.3, 28.7, 28.9, 28.65]
+        }, {
+            id: 'oil',
+            symbol: 'OIL',
+            name: 'Crude Oil',
+            type: 'commodities',
+            price: 82.30,
+            change: -1.2,
+            high: 83.80,
+            low: 81.50,
+            volume: 15000000000,
+            marketCap: 0,
+            sparkline: [83.0, 82.5, 82.0, 81.8, 82.2, 82.8, 82.3]
+        }, {
+            id: 'ngas',
+            symbol: 'NGAS',
+            name: 'Natural Gas',
+            type: 'commodities',
+            price: 2.85,
+            change: 2.3,
+            high: 2.95,
+            low: 2.75,
+            volume: 2800000000,
+            marketCap: 0,
+            sparkline: [2.75, 2.80, 2.82, 2.78, 2.85, 2.90, 2.85]
+        }, {
+            id: 'copper',
+            symbol: 'COPPER',
+            name: 'Copper',
+            type: 'commodities',
+            price: 4.52,
+            change: 0.9,
+            high: 4.58,
+            low: 4.45,
+            volume: 1600000000,
+            marketCap: 0,
+            sparkline: [4.48, 4.50, 4.52, 4.47, 4.53, 4.55, 4.52]
+        }, {
+            id: 'corn',
+            symbol: 'CORN',
+            name: 'Corn',
+            type: 'commodities',
+            price: 445.20,
+            change: -0.4,
+            high: 448.00,
+            low: 442.00,
+            volume: 900000000,
+            marketCap: 0,
+            sparkline: [446, 445, 444, 443, 445, 447, 445.2]
+        }, {
+            id: 'soybeans',
+            symbol: 'SOY',
+            name: 'Soybeans',
+            type: 'commodities',
+            price: 1180.50,
+            change: 0.3,
+            high: 1185.00,
+            low: 1175.00,
+            volume: 750000000,
+            marketCap: 0,
+            sparkline: [1178, 1180, 1182, 1176, 1181, 1183, 1180.5]
+        }, {
+            id: 'wheat',
+            symbol: 'WHEAT',
+            name: 'Wheat',
+            type: 'commodities',
+            price: 560.80,
+            change: -0.7,
+            high: 565.00,
+            low: 558.00,
+            volume: 680000000,
+            marketCap: 0,
+            sparkline: [562, 561, 559, 558, 560, 563, 560.8]
+        }];
+
+        // ============================================================
+        // STATE
+        // ============================================================
+        let currentTab = 'all';
+        let selectedAsset = 'btc';
+        let currentTimeframe = '1W';
+        let chartInstance = null;
+
+        // ============================================================
+        // DOM REFS
+        // ============================================================
+        const tableBody = document.getElementById('tableBody');
+        const statVolume = document.getElementById('statVolume');
+        const statGainers = document.getElementById('statGainers');
+        const statTopGainer = document.getElementById('statTopGainer');
+        const statTopLoser = document.getElementById('statTopLoser');
+        const chartAssetName = document.getElementById('chartAssetName');
+        const chartAssetSymbol = document.getElementById('chartAssetSymbol');
+        const chartAssetChange = document.getElementById('chartAssetChange');
+        const infoVolume = document.getElementById('infoVolume');
+        const infoMarketCap = document.getElementById('infoMarketCap');
+        const infoHigh = document.getElementById('infoHigh');
+        const infoLow = document.getElementById('infoLow');
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tfBtns = document.querySelectorAll('.chart-timeframes button');
+
+        // ============================================================
+        // UTILITY FUNCTIONS
+        // ============================================================
+        function formatPrice(p) {
+            if (p >= 1000) return '$' + p.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            if (p >= 1) return '$' + p.toFixed(4);
+            return '$' + p.toFixed(6);
+        }
+
+        function formatVolume(v) {
+            if (v >= 1e12) return '$' + (v / 1e12).toFixed(2) + 'T';
+            if (v >= 1e9) return '$' + (v / 1e9).toFixed(2) + 'B';
+            if (v >= 1e6) return '$' + (v / 1e6).toFixed(2) + 'M';
+            return '$' + v.toFixed(0);
+        }
+
+        function formatMarketCap(v) {
+            if (v === 0) return '—';
+            if (v >= 1e12) return '$' + (v / 1e12).toFixed(2) + 'T';
+            if (v >= 1e9) return '$' + (v / 1e9).toFixed(2) + 'B';
+            if (v >= 1e6) return '$' + (v / 1e6).toFixed(2) + 'M';
+            return '$' + v.toFixed(0);
+        }
+
+        function getFilteredData(tab) {
+            if (tab === 'all') return marketData;
+            return marketData.filter(d => d.type === tab);
+        }
+
+        function generateSparklineData(baseData, tf) {
+            const points = baseData || [];
+            if (points.length < 7) return points;
+            switch (tf) {
+                case '1D':
+                    return points.slice(-1).concat(points.slice(-1).map(p => p * (1 + (Math.random() - 0.5) * 0.005)));
+                case '1W':
+                    return points;
+                case '1M':
+                    let mData = [];
+                    for (let i = 0; i < 30; i++) {
+                        const idx = Math.floor(i / 4.28);
+                        const base = points[idx] || points[points.length - 1];
+                        mData.push(base * (1 + (Math.random() - 0.5) * 0.03));
+                    }
+                    return mData;
+                case '3M':
+                    let qData = [];
+                    for (let i = 0; i < 90; i++) {
+                        const base = points[Math.floor(i / 12.85)] || points[points.length - 1];
+                        qData.push(base * (1 + (Math.random() - 0.5) * 0.05));
+                    }
+                    return qData;
+                case '1Y':
+                    let yData = [];
+                    for (let i = 0; i < 365; i++) {
+                        const base = points[Math.floor(i / 52.14)] || points[points.length - 1];
+                        yData.push(base * (1 + (Math.random() - 0.5) * 0.08));
+                    }
+                    return yData;
+                default:
+                    let allData = [];
+                    for (let i = 0; i < 500; i++) {
+                        const base = points[Math.floor(i / 71.4)] || points[points.length - 1];
+                        allData.push(base * (1 + (Math.random() - 0.5) * 0.12));
+                    }
+                    return allData;
+            }
+        }
+
+        // ============================================================
+        // RENDER TABLE
+        // ============================================================
+        function renderTable(tab) {
+            const data = getFilteredData(tab);
+            let html = '';
+            data.forEach((item, index) => {
+                const isSelected = item.id === selectedAsset;
+                const changeClass = item.change >= 0 ? 'change-positive' : 'change-negative';
+                const changeSign = item.change >= 0 ? '+' : '';
+                html += `
+                            <tr class="${isSelected ? 'selected' : ''}" data-id="${item.id}" onclick="selectAsset('${item.id}')">
+                                <td>
+                                    <div class="asset-cell">
+                                        <div class="asset-icon">${item.symbol.substring(0, 3)}</div>
+                                        <div>
+                                            <div class="asset-name">${item.name}</div>
+                                            <div class="asset-symbol">${item.symbol}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>${formatPrice(item.price)}</td>
+                                <td class="${changeClass}">${changeSign}${item.change}%</td>
+                                <td>${formatPrice(item.high)}</td>
+                                <td>${formatPrice(item.low)}</td>
+                                <td>${formatVolume(item.volume)}</td>
+                                <td>${formatMarketCap(item.marketCap)}</td>
+                                <td>
+                                    <svg class="sparkline-mini" viewBox="0 0 60 28">
+                                        <polyline
+                                            points="${item.sparkline.map((v, i) => `${(i / (item.sparkline.length - 1)) * 60},${28 - ((v - Math.min(...item.sparkline)) / (Math.max(...item.sparkline) - Math.min(...item.sparkline) || 1)) * 26 - 1}`).join(' ')}"
+                                            fill="none"
+                                            stroke="${item.change >= 0 ? '#2ecc71' : '#e74c3c'}"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
+                                    </svg>
+                                </td>
+                            </tr>
+                        `;
+            });
+            tableBody.innerHTML = html;
+
+            // Update stats
+            updateStats(tab);
+        }
+
+        // ============================================================
+        // UPDATE STATS
+        // ============================================================
+        function updateStats(tab) {
+            const data = getFilteredData(tab);
+            const totalVolume = data.reduce((sum, d) => sum + d.volume, 0);
+            const gainers = data.filter(d => d.change >= 0).length;
+            const losers = data.filter(d => d.change < 0).length;
+            const sorted = [...data].sort((a, b) => b.change - a.change);
+            const topGainer = sorted[0];
+            const topLoser = sorted[sorted.length - 1];
+
+            statVolume.textContent = formatVolume(totalVolume);
+            statGainers.innerHTML = `<span class="green">${gainers}</span> / <span class="red">${losers}</span>`;
+            statTopGainer.textContent = topGainer ? `${topGainer.symbol} +${topGainer.change}%` : '—';
+            statTopLoser.textContent = topLoser ? `${topLoser.symbol} ${topLoser.change}%` : '—';
+        }
+
+        // ============================================================
+        // SELECT ASSET
+        // ============================================================
+        function selectAsset(id) {
+            selectedAsset = id;
+            renderTable(currentTab);
+            updateChart(id, currentTimeframe);
+
+            // Update chart header
+            const asset = marketData.find(d => d.id === id);
+            if (asset) {
+                chartAssetName.textContent = asset.name;
+                chartAssetSymbol.textContent = asset.symbol;
+                const changeClass = asset.change >= 0 ? 'change-positive' : 'change-negative';
+                const sign = asset.change >= 0 ? '+' : '';
+                chartAssetChange.textContent = `${sign}${asset.change}%`;
+                chartAssetChange.className = changeClass;
+                infoVolume.textContent = formatVolume(asset.volume);
+                infoMarketCap.textContent = formatMarketCap(asset.marketCap);
+                infoHigh.textContent = formatPrice(asset.high);
+                infoLow.textContent = formatPrice(asset.low);
+            }
+        }
+
+        // ============================================================
+        // UPDATE CHART
+        // ============================================================
+        function updateChart(assetId, tf) {
+            const asset = marketData.find(d => d.id === assetId);
+            if (!asset) return;
+
+            const data = generateSparklineData(asset.sparkline, tf);
+            const labels = data.map((_, i) => i);
+            const isPositive = data[data.length - 1] >= data[0];
+
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            const ctx = document.getElementById('mainChart').getContext('2d');
+
+            // Create gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+            const color = isPositive ? '#2ecc71' : '#e74c3c';
+            gradient.addColorStop(0, color + '40');
+            gradient.addColorStop(1, color + '00');
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        borderColor: color,
+                        backgroundColor: gradient,
+                        borderWidth: 2.5,
+                        pointRadius: 0,
+                        tension: 0.4,
+                        fill: true,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return '$' + context.parsed.y.toFixed(2);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            display: false,
+                            grid: { display: false }
+                        },
+                        y: {
+                            display: true,
+                            position: 'right',
+                            grid: {
+                                color: 'rgba(0,0,0,0.04)',
+                                drawBorder: false,
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value.toFixed(2);
+                                },
+                                font: { size: 10, family: 'Inter' },
+                                color: '#8a7a6a',
+                                maxTicksLimit: 6,
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    }
+                }
+            });
+        }
+
+        // ============================================================
+        // TAB SWITCHING
+        // ============================================================
+        function switchTab(tab) {
+            currentTab = tab;
+            tabBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tab === tab);
+            });
+            renderTable(tab);
+            // Re-select the current asset or pick first
+            const data = getFilteredData(tab);
+            if (data.length > 0) {
+                const firstId = data[0].id;
+                if (selectedAsset !== firstId || !data.some(d => d.id === selectedAsset)) {
+                    selectAsset(firstId);
+                } else {
+                    // Just re-render the table with selection
+                    renderTable(tab);
+                }
+            }
+        }
+
+        // ============================================================
+        // TIMEFRAME SWITCHING
+        // ============================================================
+        function switchTimeframe(tf) {
+            currentTimeframe = tf;
+            tfBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tf === tf);
+            });
+            updateChart(selectedAsset, tf);
+        }
+
+        // ============================================================
+        // SORT TABLE
+        // ============================================================
+        let sortKey = null;
+        let sortAsc = true;
+
+        function sortTable(key) {
+            if (sortKey === key) {
+                sortAsc = !sortAsc;
+            } else {
+                sortKey = key;
+                sortAsc = true;
+            }
+
+            const data = getFilteredData(currentTab);
+            data.sort((a, b) => {
+                let valA, valB;
+                switch (key) {
+                    case 'asset':
+                        valA = a.name;
+                        valB = b.name;
+                        break;
+                    case 'price':
+                        valA = a.price;
+                        valB = b.price;
+                        break;
+                    case 'change':
+                        valA = a.change;
+                        valB = b.change;
+                        break;
+                    case 'high':
+                        valA = a.high;
+                        valB = b.high;
+                        break;
+                    case 'low':
+                        valA = a.low;
+                        valB = b.low;
+                        break;
+                    case 'volume':
+                        valA = a.volume;
+                        valB = b.volume;
+                        break;
+                    case 'marketCap':
+                        valA = a.marketCap;
+                        valB = b.marketCap;
+                        break;
+                    default:
+                        return 0;
+                }
+                if (typeof valA === 'string') {
+                    return sortAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                }
+                return sortAsc ? valA - valB : valB - valA;
+            });
+
+            // Rebuild table body with sorted data
+            let html = '';
+            data.forEach((item) => {
+                const isSelected = item.id === selectedAsset;
+                const changeClass = item.change >= 0 ? 'change-positive' : 'change-negative';
+                const changeSign = item.change >= 0 ? '+' : '';
+                html += `
+                            <tr class="${isSelected ? 'selected' : ''}" data-id="${item.id}" onclick="selectAsset('${item.id}')">
+                                <td>
+                                    <div class="asset-cell">
+                                        <div class="asset-icon">${item.symbol.substring(0, 3)}</div>
+                                        <div>
+                                            <div class="asset-name">${item.name}</div>
+                                            <div class="asset-symbol">${item.symbol}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>${formatPrice(item.price)}</td>
+                                <td class="${changeClass}">${changeSign}${item.change}%</td>
+                                <td>${formatPrice(item.high)}</td>
+                                <td>${formatPrice(item.low)}</td>
+                                <td>${formatVolume(item.volume)}</td>
+                                <td>${formatMarketCap(item.marketCap)}</td>
+                                <td>
+                                    <svg class="sparkline-mini" viewBox="0 0 60 28">
+                                        <polyline
+                                            points="${item.sparkline.map((v, i) => `${(i / (item.sparkline.length - 1)) * 60},${28 - ((v - Math.min(...item.sparkline)) / (Math.max(...item.sparkline) - Math.min(...item.sparkline) || 1)) * 26 - 1}`).join(' ')}"
+                                            fill="none"
+                                            stroke="${item.change >= 0 ? '#2ecc71' : '#e74c3c'}"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
+                                    </svg>
+                                </td>
+                            </tr>
+                        `;
+            });
+            tableBody.innerHTML = html;
+
+            // Update stats (order doesn't affect stats)
+            updateStats(currentTab);
+
+            // Update sort indicators
+            document.querySelectorAll('thead th').forEach(th => {
+                const thKey = th.dataset.sort;
+                if (thKey === key) {
+                    th.querySelector('.sort-icon').textContent = sortAsc ? '↑' : '↓';
+                } else {
+                    th.querySelector('.sort-icon').textContent = '↕';
+                }
+            });
+        }
+
+        // ============================================================
+        // MOBILE MENU
+        // ============================================================
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            document.getElementById('navLinks').classList.toggle('open');
+        });
+
+        // ============================================================
+        // SCROLL ANIMATIONS
+        // ============================================================
+        const fadeElements = document.querySelectorAll('.fade-up');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        fadeElements.forEach(el => observer.observe(el));
+
+        // ============================================================
+        // EVENT LISTENERS
+        // ============================================================
+        // Tab buttons
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                switchTab(this.dataset.tab);
+            });
+        });
+
+        // Timeframe buttons
+        tfBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                switchTimeframe(this.dataset.tf);
+            });
+        });
+
+        // Table header sort
+        document.querySelectorAll('thead th').forEach(th => {
+            th.addEventListener('click', function() {
+                const key = this.dataset.sort;
+                if (key) sortTable(key);
+            });
+        });
+
+        // ============================================================
+        // INIT
+        // ============================================================
+        // Set initial asset to BTC
+        selectedAsset = 'btc';
+        currentTab = 'all';
+        currentTimeframe = '1W';
+
+        // Render everything
+        renderTable('all');
+        updateChart('btc', '1W');
+
+        // Set initial chart header
+        const btc = marketData.find(d => d.id === 'btc');
+        if (btc) {
+            chartAssetName.textContent = btc.name;
+            chartAssetSymbol.textContent = btc.symbol;
+            chartAssetChange.textContent = `+${btc.change}%`;
+            chartAssetChange.className = 'change-positive';
+            infoVolume.textContent = formatVolume(btc.volume);
+            infoMarketCap.textContent = formatMarketCap(btc.marketCap);
+            infoHigh.textContent = formatPrice(btc.high);
+            infoLow.textContent = formatPrice(btc.low);
+        }
+
+        console.log('✅ Trading Vault — Markets Page Loaded');
+        console.log(`📊 ${marketData.length} assets loaded across 3 asset classes`);
+    </script>
+
+</body>
+</html>
